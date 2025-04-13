@@ -1,0 +1,25 @@
+type Course {
+    id: UUID
+    title: String
+    duration: String
+    credits: String
+    facultyId: UUID
+}
+
+input CourseInput {
+    title: String!
+    duration: String!
+    credits: String!
+    facultyId: UUID
+}
+
+extend type Query {
+    getAllCourses: [Course]
+    getCourseById(id: UUID!): Course
+}
+
+extend type Mutation {
+    saveCourse(course: CourseInput!): String
+    assignFacultyToCourse(courseId: UUID!, facultyId: UUID!): String
+    enrollStudentsToCourse(courseId: UUID!, studentIds: [UUID!]!): String
+}

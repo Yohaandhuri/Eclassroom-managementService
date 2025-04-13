@@ -1,0 +1,52 @@
+scalar UUID
+
+enum StatusEnum {
+    ACTIVE
+    INACTIVE
+    PENDING
+}
+
+enum RoleEnum {
+    TEACHER,
+    STUDENT,
+    ADMIN
+}
+
+enum GenderEnum{
+    MALE,
+    FEMALE,
+    OTHER
+}
+
+type User {
+    firstName: String!
+    lastName: String!
+    email: String!
+    roleId: ID
+    dob: String!
+    phoneNumber: String
+    status: StatusEnum!
+    role: RoleEnum!
+}
+
+type Query {
+    getUsers: [User!]!
+    getUser(id: ID!): User
+}
+
+type Mutation {
+    registerUser(userInput: UserInput): String!
+}
+
+input UserInput{
+    firstName: String!
+    lastName: String!
+    email: String!
+    roleId: UUID!
+    dob: String
+    gender: GenderEnum
+    phoneNumber: String
+    status: StatusEnum!
+    role: RoleEnum!
+}
+
