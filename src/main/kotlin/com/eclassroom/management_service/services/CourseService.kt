@@ -1,8 +1,10 @@
 package com.eclassroom.management_service.services
 
 import com.eclassroom.management_service.dto.CourseDto
+import com.eclassroom.management_service.dto.CourseInputDto
 import com.eclassroom.management_service.dto.toDto
 import com.eclassroom.management_service.dto.toEntity
+import com.eclassroom.management_service.entities.UsersEntity
 import com.eclassroom.management_service.repositories.CourseRepository
 import com.eclassroom.management_service.repositories.UserRepository
 import jakarta.persistence.EntityNotFoundException
@@ -20,9 +22,10 @@ class CourseService(
         data class Success(val msg:String,var entity:CourseDto?=null) : Result
         data class Error(val msg:String): Result
         data class NotFound(val msg: String): Result
+        data class AlreadyExists(val msg: String): Result
     }
 
-    fun getCourseById(id: UUID): Result {
+    fun getCourseById(id: Long): Result {
         val course = courseRepository.findById(id).getOrNull()
             ?: return  Result.NotFound( msg = "Course with id $id not found")
         return Result.Success( msg = "Success",entity = course.toDto())
@@ -32,10 +35,18 @@ class CourseService(
         return courseRepository.findAll().map { it.toDto() }
     }
 
-    fun saveCourse(courseDto: CourseDto): Result {
+    fun saveCourse(courseInputDto: CourseInputDto): Result {
         try {
-            val faculty = courseDto.facultyId?.let { userRepository.findById(it).getOrNull() }
-            val entity = courseDto.toEntity(faculty)
+            if(courseRepository.findByTitle(courseInputDto.title)!=null)
+                return Result.AlreadyExists("Course with title:${courseInputDto.title} already exists")
+
+            var faculty: UsersEntity? = null
+            if(courseInputDto.facultyId!=null){
+                faculty = userRepository.findById(courseInputDto.facultyId).getOrNull() ?:
+                return Result.NotFound("Faculty with ID:${faculty} does not exist")
+            }
+
+            val entity = courseInputDto.toEntity(faculty)
             courseRepository.save(entity)
             return Result.Success("Course data saved successfully")
         } catch (e:Exception){
@@ -43,26 +54,23 @@ class CourseService(
         }
     }
 
-    fun enrollStudents(courseId: UUID, studentIds: List<UUID>): Result {
-        if (studentIds.isEmpty()) {
-            return Result.Error("No student IDs provided for enrollment.")
-        }
+    fun enrollStudent(courseId: Long, studentId: Long): Result {
 
         val course = courseRepository.findById(courseId).getOrNull()
             ?: return  Result.NotFound( msg = "Course with id $courseId not found")
 
-        val students = userRepository.findAllById(studentIds)
-        if (students.isEmpty()) {
-            return Result.NotFound("No valid students found for provided IDs.")
-        }
+        val student = userRepository.findById(studentId).getOrNull()
+            ?: return Result.NotFound("No valid students found for provided IDs.")
+        if(student.courses.contains(course))
+            return Result.AlreadyExists("Student already enrolled to course")
+        student.courses.add(course)
 
-        course.students.addAll(students)
-        courseRepository.save(course)
+        userRepository.save(student)
 
-        return Result.Success("${students.size} student(s) enrolled successfully to course: ${course.id}")
+        return Result.Success("Student with ID:${studentId} enrolled successfully to course: ${course.id}")
     }
 
-    fun assignFaculty(courseId: UUID, facultyId: UUID): Result {
+    fun assignFaculty(courseId: Long, facultyId: Long): Result {
         val course = courseRepository.findById(courseId).getOrNull()
             ?: return  Result.NotFound( msg = "Course with id $courseId not found")
 

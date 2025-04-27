@@ -19,19 +19,24 @@ enum GenderEnum{
 }
 
 type User {
+    id: ID!
     firstName: String!
     lastName: String!
     email: String!
-    roleId: ID
-    dob: String!
+    roleId: Int
+    dob: String
     phoneNumber: String
     status: StatusEnum!
     role: RoleEnum!
+    gender: GenderEnum!
+    creatorId: ID
 }
 
 type Query {
     getUsers: [User!]!
+    getUsersSpecific(role:RoleEnum!): [User!]!
     getUser(id: ID!): User
+    getUserCourses(userId:ID): [Course]!
 }
 
 type Mutation {
@@ -42,11 +47,12 @@ input UserInput{
     firstName: String!
     lastName: String!
     email: String!
-    roleId: UUID!
     dob: String
     gender: GenderEnum
     phoneNumber: String
     status: StatusEnum!
     role: RoleEnum!
+    creatorId: ID!
+    password: String
 }
 

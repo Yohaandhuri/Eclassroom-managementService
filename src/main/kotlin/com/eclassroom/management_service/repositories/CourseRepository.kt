@@ -6,4 +6,7 @@ import org.springframework.stereotype.Repository
 import java.util.*
 
 @Repository
-interface CourseRepository : JpaRepository<CourseEntity, UUID> {}
+interface CourseRepository : JpaRepository<CourseEntity, Long> {
+    fun findByTitle(title:String):CourseEntity?
+
+}

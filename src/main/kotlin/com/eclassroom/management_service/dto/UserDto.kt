@@ -5,38 +5,66 @@ import com.eclassroom.management_service.commonEnums.RoleEnum
 import com.eclassroom.management_service.commonEnums.StatusEnum
 import com.eclassroom.management_service.entities.UsersEntity
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 data class UserDto (
+    val id: Long,
+    val creatorId: Long? = null,
     val firstName: String,
     val lastName: String,
     val email: String,
-    val dob: LocalDate? = null,
+    val dob: String? = null,
     val phoneNumber: String? = null,
     val status: StatusEnum,
     val role: RoleEnum,
     val gender: GenderEnum?,
+    val password: String? = null,
+    val roleId: Int? = null
 )
 
-fun UserDto.toEntity(password:String): UsersEntity =
+data class UserInputDto (
+    val creatorId: Long,
+    val firstName: String,
+    val lastName: String,
+    val email: String,
+    val dob: String? = null,
+    val phoneNumber: String? = null,
+    val status: StatusEnum,
+    val role: RoleEnum,
+    val gender: GenderEnum?,
+    val password: String? = null,
+)
+
+
+fun UserInputDto.toEntity(password:String?,roleId:Int): UsersEntity =
     UsersEntity(
         firstName = this.firstName,
         lastName = this.lastName,
         email = this.email,
-        dob = this.dob,
+        dob = this.dob?.let {
+            LocalDate.parse(it, DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+        },
         phoneNumber = this.phoneNumber,
         status = this.status,
-        passwordHash = password,  // need to change this
+        passwordHash = password,
         role = this.role,
         gender = this.gender,
-    )
+        roleNumber = roleId
+    ).apply {
+        this.createdBy = creatorId
+//        this.createdAt = LocalDateTime.now() // already in PrePersist
+    }
 
 fun UsersEntity.toUserDto() : UserDto = UserDto(
+    id = this.id,
     firstName = this.firstName,
     lastName = this.lastName,
     email = this.email,
-    dob = this.dob,
+    dob = this.dob.toString(),
     phoneNumber = this.phoneNumber,
     status = this.status,
     role = this.role,
-    gender = this.gender
+    gender = this.gender,
+    creatorId = this.createdBy,
+    roleId = this.roleNumber
 )

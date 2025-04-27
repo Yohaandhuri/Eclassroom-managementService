@@ -5,16 +5,15 @@ import jakarta.persistence.MappedSuperclass
 import jakarta.persistence.PrePersist
 import jakarta.persistence.PreUpdate
 import java.time.LocalDateTime
-import java.util.UUID
 
 @MappedSuperclass
 abstract class AuditableEntity {
 
     @Column(name = "created_by", nullable = false, updatable = false)
-    var createdBy: UUID? = null
+    var createdBy: Long? = null
 
     @Column(name = "updated_by")
-    var updatedBy: UUID? = null
+    var updatedBy: Long? = null
 
     @Column(name = "created_at", nullable = false, updatable = false)
     var createdAt: LocalDateTime = LocalDateTime.now()

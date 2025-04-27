@@ -1,9 +1,9 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/Eclassroom
-    username: yohaan.dhuri
-    password: sacyo@2021
-    driver-class-name: org.postgresql.Driver
+    url: jdbc:mysql://localhost:3306/Eclassroom  # MySQL connection URL
+    username: root  # Using the 'root' user
+    password: ''  # No password (empty string)
+    driver-class-name: com.mysql.cj.jdbc.Driver  # MySQL driver class
 
   jpa:
     hibernate:
@@ -11,10 +11,18 @@ spring:
     show-sql: true
     properties:
       hibernate:
-        '[format-sql]': true
+        format_sql: true
 
   graphql:
     graphiql:
       enabled: true
 
-
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: DEBUG
+        type:
+          descriptor:
+            sql:
+              BasicBinder: TRACE

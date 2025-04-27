@@ -36,6 +36,9 @@ dependencies {
 	implementation("com.graphql-java:graphql-java-extended-scalars:20.1")
 	compileOnly("org.projectlombok:lombok")
 	runtimeOnly("com.mysql:mysql-connector-j")
+	implementation("org.bouncycastle:bcpkix-jdk15on:1.70")
+	implementation("org.springframework.security:spring-security-crypto")
+	runtimeOnly("mysql:mysql-connector-java:8.0.33") // Specify the version
 	annotationProcessor("org.projectlombok:lombok")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
