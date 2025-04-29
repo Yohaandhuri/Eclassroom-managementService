@@ -35,6 +35,20 @@ data class UserInputDto (
     val password: String? = null,
 )
 
+data class UserDtoTemp(
+    val id: Long,
+    val firstName: String,
+    val lastName: String,
+    val email: String,
+    val dob: LocalDate,
+    val phoneNumber: String,
+    val status: StatusEnum,
+    val role: RoleEnum,
+    val gender:GenderEnum,
+    val createdBy: Long,
+    val roleNumber:Int? = null
+)
+
 
 fun UserInputDto.toEntity(password:String?,roleId:Int): UsersEntity =
     UsersEntity(
@@ -67,4 +81,18 @@ fun UsersEntity.toUserDto() : UserDto = UserDto(
     gender = this.gender,
     creatorId = this.createdBy,
     roleId = this.roleNumber
+)
+
+fun UserDtoTemp.toUserDto(): UserDto = UserDto (
+        id = this.id,
+        firstName = this.firstName,
+        lastName = this.lastName,
+        email = this.email,
+        dob = this.dob.toString(),
+        phoneNumber = this.phoneNumber,
+        status = this.status,
+        role = this.role,
+        gender = this.gender,
+        creatorId = this.createdBy,
+        roleId = this.roleNumber
 )

@@ -71,8 +71,8 @@ class UserService(
         }
     }
 
-    fun getUsersByRole(role:RoleEnum):List<UsersEntity>{
-        return userRepository.findByRole(role)
+    fun getUsersByRole(role: RoleEnum): List<UserDto> {
+        return userRepository.findUserDtosByRole(role).map { it.toUserDto() } // create safe copy
     }
 
     private fun generateUniqueRoleId(): Int {

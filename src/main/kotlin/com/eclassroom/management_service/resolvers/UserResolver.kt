@@ -54,6 +54,6 @@ class UserResolver(
 
     @QueryMapping
     fun getUsersSpecific(@Argument role: RoleEnum) : List<UserDto>{
-        return userService.getUsersByRole(role).map { it.toUserDto() }
+        return userService.getUsersByRole(role)
     }
 }
