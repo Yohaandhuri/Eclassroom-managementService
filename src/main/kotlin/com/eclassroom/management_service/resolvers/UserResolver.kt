@@ -40,6 +40,37 @@ class UserResolver(
         }
     }
 
+    @MutationMapping
+    fun editUser(@Argument editUserInput: EditUserInputDto): String {
+        return when (val result = userService.editUser(editUserInput)) {
+            is UserService.Result.Success -> result.msg
+            is UserService.Result.Error -> throw GraphQLException(result.msg)
+            is UserService.Result.AlreadyExist -> throw (GraphqlErrorException.newErrorException()
+                .message(result.msg)
+                .extensions(mapOf("errorCode" to "USER_ALREADY_EXISTS"))
+                .build())
+            else -> {throw GraphQLException("There was an error.")}
+        }
+    }
+
+    @MutationMapping
+    fun resetPassword(@Argument resetPasswordInputDto: ResetPasswordInputDto): String{
+        return when (val result = userService.resetPassword(resetPasswordInputDto)) {
+            is UserService.Result.Success -> result.msg
+            is UserService.Result.Error -> throw GraphQLException(result.msg)
+            is UserService.Result.AlreadyExist -> throw (GraphqlErrorException.newErrorException()
+                .message(result.msg)
+                .extensions(mapOf("errorCode" to "USER_ALREADY_EXISTS"))
+                .build())
+            is UserService.Result.Unauthenticated -> throw (GraphqlErrorException.newErrorException()
+                .message(result.msg)
+                .extensions(mapOf("errorCode" to "INCORRECT_CREDENTIALS"))
+                .build())
+            else -> {throw GraphQLException("There was an error.")}
+        }
+    }
+
+
     @QueryMapping
     fun getUserCourses(@Argument userId:Long): List<CourseDto>{
         return when (val result = userService.getUserCourses(userId)) {
@@ -60,7 +91,7 @@ class UserResolver(
 
     @QueryMapping
     fun loginUser(@Argument loginInput:LoginDto) : Long{
-         when(val result = userService.getUserByEmail(loginInput.email,loginInput.password)){
+         when(val result = userService.loginUser(loginInput.email,loginInput.password)){
             is UserService.LoginResult.Success -> return result.user.id
             is UserService.LoginResult.NotFound -> throw (GraphqlErrorException.newErrorException()
                 .message(result.msg)

@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service
 import java.util.*
 import kotlin.jvm.optionals.getOrElse
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import kotlin.jvm.optionals.getOrNull
 
 @Service
@@ -32,6 +34,7 @@ class UserService(
         data class Error(val msg:String): Result
         data class NotFound(val msg:String): Result
         data class AlreadyExist(val msg:String): Result
+        data class Unauthenticated(val msg:String): Result
     }
 
     interface LoginResult{
@@ -45,6 +48,40 @@ class UserService(
         return userRepository.findById(id).getOrElse {
             throw EntityNotFoundException("User with id: ${id} does not exist")
         }.toUserDto()
+    }
+
+    fun resetPassword(resetPasswordInputDto:ResetPasswordInputDto):Result{
+        val user = userRepository.findById(resetPasswordInputDto.userId).getOrNull() ?:
+         return Result.NotFound("User with id: ${resetPasswordInputDto.userId} does not exist")
+        val newPasswordHash: String? = resetPasswordInputDto.newPassword?.takeIf { it.isNotBlank() }
+            ?.let { passwordEncoder.encode(it) }
+        if(resetPasswordInputDto.role == RoleEnum.ADMIN && newPasswordHash!=null){
+            userRepository.saveAndFlush(user.apply { this.passwordHash=newPasswordHash })
+        }
+        else{
+            if (!passwordEncoder.matches(resetPasswordInputDto.oldPassword, user.passwordHash)) {
+                return Result.Unauthenticated("Incorrect old password")
+            }
+            userRepository.saveAndFlush(user.apply { this.passwordHash = newPasswordHash })
+        }
+        return Result.Success("Password reset successful")
+    }
+
+    fun editUser(editUserInput: EditUserInputDto): Result{
+        val user = userRepository.findById(editUserInput.id).getOrNull() ?:
+            return Result.NotFound("User with id: ${editUserInput.id} does not exist")
+        if (user.email!=editUserInput.email && userRepository.findByEmail(editUserInput.email)!=null)
+            return Result.AlreadyExist("User with email:${editUserInput.email} already exists, use different email.")
+        userRepository.save(user.apply {
+            this.firstName = editUserInput.firstName
+            this.lastName = editUserInput.lastName
+            this.email = editUserInput.email
+            this.dob = LocalDate.parse(editUserInput.dob, DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+            this.phoneNumber = editUserInput.phoneNumber
+            this.gender = editUserInput.gender
+            this.updatedBy = editUserInput.updatedBy
+        })
+        return Result.Success("User information edited successfully")
     }
 
 
@@ -87,7 +124,7 @@ class UserService(
         return candidate
     }
 
-    fun getUserByEmail(email:String,password:String): LoginResult {
+    fun loginUser(email:String,password:String): LoginResult {
         val user = userRepository.findByEmail(email)
             ?: return LoginResult.NotFound(msg = "User with email:${email} does not exist")
 

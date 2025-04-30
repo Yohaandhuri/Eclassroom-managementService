@@ -17,29 +17,29 @@ data class UsersEntity(
     val id: Long = 0L,
 
     @Column(name = "first_name", nullable = false)
-    val firstName: String,
+    var firstName: String,
 
     @Column(name = "last_name", nullable = false)
-    val lastName: String,
+    var lastName: String,
 
     @Column(name = "email", nullable = false, unique = true)
-    val email: String,
+    var email: String,
 
     @Column(name = "password_hash", nullable = false)
-    val passwordHash: String? = null,
+    var passwordHash: String? = null,
 
     @Column(name = "date_of_birth")
-    val dob: LocalDate? = null,
+    var dob: LocalDate? = null,
 
     @Column(name = "phone_number")
-    val phoneNumber: String? = null,
+    var phoneNumber: String? = null,
 
     @Column(name = "role_number", nullable = false, unique = true)
     val roleNumber: Int,
 
     @Column(name = "gender")
     @Enumerated(EnumType.STRING)
-    val gender: GenderEnum? = null,
+    var gender: GenderEnum? = null,
 
     @Column(name = "sem")
     @Check(constraints = "sem BETWEEN 1 AND 8")

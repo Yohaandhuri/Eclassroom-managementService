@@ -37,6 +37,25 @@ data class UserInputDto (
     val sem: Int? = null
 )
 
+data class EditUserInputDto (
+    val id: Long,
+    val firstName: String,
+    val lastName: String,
+    val email: String,
+    val dob: String? = null,
+    val phoneNumber: String? = null,
+    val gender: GenderEnum?,
+    val updatedBy: Long? = null
+)
+
+data class ResetPasswordInputDto(
+    val userId:Long,
+    val role: RoleEnum,
+    val editedBy: Long,
+    val oldPassword: String? = null,
+    val newPassword:String
+)
+
 data class UserDtoTemp(
     val id: Long,
     val firstName: String,

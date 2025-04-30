@@ -43,6 +43,8 @@ type Query {
 
 type Mutation {
     registerUser(userInput: UserInput): String!
+    editUser(editUserInput: EditUserInput): String!
+    resetPassword(resetPasswordInputDto: ResetPasswordInputDto): String
 }
 
 input LoginInput {
@@ -62,5 +64,24 @@ input UserInput{
     creatorId: ID!
     password: String
     sem: Int
+}
+
+input EditUserInput {
+    id: ID!
+    firstName: String!
+    lastName: String!
+    email: String!
+    dob: String!
+    phoneNumber: String!,
+    gender: GenderEnum!,
+    updatedBy: ID
+}
+
+input ResetPasswordInputDto{
+    userId:ID!
+    role: RoleEnum!
+    editedBy: ID!
+    oldPassword: String
+    newPassword:String!
 }
 
