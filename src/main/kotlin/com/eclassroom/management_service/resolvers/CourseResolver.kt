@@ -1,7 +1,6 @@
 package com.eclassroom.management_service.resolvers
 
-import com.eclassroom.management_service.dto.CourseDto
-import com.eclassroom.management_service.dto.CourseInputDto
+import com.eclassroom.management_service.dto.*
 import com.eclassroom.management_service.services.CourseService
 import graphql.GraphQLException
 import graphql.GraphqlErrorException
@@ -28,6 +27,19 @@ class CourseResolver(
             is CourseService.Result.Success -> result.entity
             is CourseService.Result.Error -> throw GraphQLException(result.msg)
             is CourseService.Result.NotFound -> throw EntityNotFoundException(result.msg)
+            else -> {throw GraphQLException("There was an error.")}
+        }
+    }
+
+    @QueryMapping
+    fun getFacultyCourses(@Argument facultyId: Long): List<CourseDto> {
+        return when (val result = courseService.getFacultyCourses(facultyId)) {
+            is CourseService.FacultyCourseResult.Success -> result.course.map { it.toDto() }
+            is CourseService.FacultyCourseResult.Error -> throw GraphQLException(result.msg)
+            is CourseService.FacultyCourseResult.NotFound -> throw (GraphqlErrorException.newErrorException()
+                .message(result.msg)
+                .extensions(mapOf("errorCode" to "FACULTY_DOES_NOT_EXISTS"))
+                .build())
             else -> {throw GraphQLException("There was an error.")}
         }
     }
@@ -65,4 +77,16 @@ class CourseResolver(
         }
     }
 
+    @QueryMapping
+    fun getCourseStudents(@Argument courseId: Long): List<UserDto> {
+        return when (val result = courseService.getCourseStudents(courseId)) {
+            is CourseService.CourseStudentsResult.Success -> result.students
+            is CourseService.CourseStudentsResult.Error -> throw GraphQLException(result.msg)
+            is CourseService.CourseStudentsResult.NotFound -> throw throw (GraphqlErrorException.newErrorException()
+                .message(result.msg)
+                .extensions(mapOf("errorCode" to "COURSE_DOES_NOT_EXIST"))
+                .build())
+            else -> {throw GraphQLException("There was an error.")}
+        }
+    }
 }

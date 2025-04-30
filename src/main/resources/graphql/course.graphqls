@@ -20,6 +20,8 @@ input CourseInput {
 extend type Query {
     getAllCourses: [Course]!
     getCourseById(id: ID!): Course
+    getFacultyCourses(facultyId:ID!): [Course]
+    getCourseStudents(courseId: ID): [User]
 }
 
 extend type Mutation {

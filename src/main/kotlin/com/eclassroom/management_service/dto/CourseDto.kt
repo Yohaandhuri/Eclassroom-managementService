@@ -14,6 +14,17 @@ data class CourseDto(
 //    val studentIds: Set<Long> = setOf() // reference by IDs
 )
 
+data class CourseDtoTemp(
+    val id: Long? = null,
+    val title: String,
+    val duration: String,
+    val credicts: String,
+    val facultyId: Long?, // reference by ID
+    val year:String = "2025",
+    val sem:Int = 1
+//    val studentIds: Set<Long> = setOf() // reference by IDs
+)
+
 data class CourseInputDto(
     val title: String,
     val duration: String,
@@ -30,6 +41,19 @@ fun CourseEntity.toDto(): CourseDto {
         duration = this.duration,
         credits = this.credicts,
         facultyId = this.faculty?.id,
+        year = this.year,
+        sem = this.sem
+//        studentIds = this.students.mapNotNull { it.id }.toSet()
+    )
+}
+
+fun CourseDtoTemp.toDto(): CourseDto {
+    return CourseDto(
+        id = this.id,
+        title = this.title,
+        duration = this.duration,
+        credits = this.credicts,
+        facultyId = this.facultyId,
         year = this.year,
         sem = this.sem
 //        studentIds = this.students.mapNotNull { it.id }.toSet()

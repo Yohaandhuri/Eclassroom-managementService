@@ -43,7 +43,7 @@ class UserResolver(
     @QueryMapping
     fun getUserCourses(@Argument userId:Long): List<CourseDto>{
         return when (val result = userService.getUserCourses(userId)) {
-            is UserService.Result.Success -> result.courses?.map { it.toDto() } ?: listOf()
+            is UserService.Result.Success -> result?.courses ?: listOf()
             is UserService.Result.Error -> throw GraphQLException(result.msg)
             is UserService.Result.NotFound -> throw (GraphqlErrorException.newErrorException()
                 .message(result.msg)

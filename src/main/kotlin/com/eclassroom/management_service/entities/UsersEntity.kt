@@ -56,7 +56,7 @@ data class UsersEntity(
     @Enumerated(EnumType.STRING)
     val role: RoleEnum, // Could use an enum converter if needed
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "student_courses",
         joinColumns = [JoinColumn(name = "student_id")],

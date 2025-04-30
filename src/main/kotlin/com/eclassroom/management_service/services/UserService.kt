@@ -1,10 +1,7 @@
 package com.eclassroom.management_service.services
 
 import com.eclassroom.management_service.commonEnums.RoleEnum
-import com.eclassroom.management_service.dto.UserDto
-import com.eclassroom.management_service.dto.UserInputDto
-import com.eclassroom.management_service.dto.toEntity
-import com.eclassroom.management_service.dto.toUserDto
+import com.eclassroom.management_service.dto.*
 import com.eclassroom.management_service.entities.CourseEntity
 import com.eclassroom.management_service.entities.UsersEntity
 import com.eclassroom.management_service.repositories.UserRepository
@@ -31,7 +28,7 @@ class UserService(
     )
 
     interface Result{
-        data class Success(val msg:String,var courses:List<CourseEntity>?=null) : Result
+        data class Success(val msg:String,var courses:List<CourseDto>?=null) : Result
         data class Error(val msg:String): Result
         data class NotFound(val msg:String): Result
         data class AlreadyExist(val msg:String): Result
@@ -62,7 +59,7 @@ class UserService(
         if(user==null)
             return Result.NotFound("User with id:${userId} does not exist")
         val courses = userRepository.findCoursesByUserId(user.id)
-        return Result.Success("Courses fetched successfully",courses?.toList())
+        return Result.Success("Courses fetched successfully",courses.map { it.toDto() })
     }
 
     fun registerUser(userInput: UserInputDto):Result{
