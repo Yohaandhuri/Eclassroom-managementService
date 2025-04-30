@@ -37,10 +37,16 @@ type Query {
     getUsersSpecific(role:RoleEnum!): [User!]!
     getUser(id: ID!): User
     getUserCourses(userId:ID): [Course]!
+    loginUser(loginInput:LoginInput): ID
 }
 
 type Mutation {
     registerUser(userInput: UserInput): String!
+}
+
+input LoginInput {
+    email:String!,
+    password:String!
 }
 
 input UserInput{

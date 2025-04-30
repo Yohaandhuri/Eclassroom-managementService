@@ -37,6 +37,13 @@ class UserService(
         data class AlreadyExist(val msg:String): Result
     }
 
+    interface LoginResult{
+        data class Success(val user: UsersEntity): LoginResult
+        data class NotFound(val msg:String): LoginResult
+        data class Unauthenticated(val msg:String): LoginResult
+    }
+
+
     fun getUserById(id: Long): UserDto{
         return userRepository.findById(id).getOrElse {
             throw EntityNotFoundException("User with id: ${id} does not exist")
@@ -82,4 +89,16 @@ class UserService(
         } while (userRepository.existsByRoleNumber(candidate))
         return candidate
     }
+
+    fun getUserByEmail(email:String,password:String): LoginResult {
+        val user = userRepository.findByEmail(email)
+            ?: return LoginResult.NotFound(msg = "User with email:${email} does not exist")
+
+        if (!passwordEncoder.matches(password, user.passwordHash)) {
+            return LoginResult.Unauthenticated("Invalid credentials.")
+        }
+
+        return LoginResult.Success(user)
+    }
+
 }

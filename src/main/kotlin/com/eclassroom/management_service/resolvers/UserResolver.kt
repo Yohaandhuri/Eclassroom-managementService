@@ -6,6 +6,7 @@ import com.eclassroom.management_service.services.UserService
 import graphql.ErrorType
 import graphql.GraphQLException
 import graphql.GraphqlErrorException
+import org.apache.catalina.User
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.MutationMapping
 import org.springframework.graphql.data.method.annotation.QueryMapping
@@ -55,5 +56,21 @@ class UserResolver(
     @QueryMapping
     fun getUsersSpecific(@Argument role: RoleEnum) : List<UserDto>{
         return userService.getUsersByRole(role)
+    }
+
+    @QueryMapping
+    fun loginUser(@Argument loginInput:LoginDto) : Long{
+         when(val result = userService.getUserByEmail(loginInput.email,loginInput.password)){
+            is UserService.LoginResult.Success -> return result.user.id
+            is UserService.LoginResult.NotFound -> throw (GraphqlErrorException.newErrorException()
+                .message(result.msg)
+                .extensions(mapOf("errorCode" to "USER_DOES_NOT_EXISTS"))
+                .build())
+            is UserService.LoginResult.Unauthenticated -> throw (GraphqlErrorException.newErrorException()
+                .message(result.msg)
+                .extensions(mapOf("errorCode" to "INCORRECT_PASSWORD"))
+                .build())
+            else -> {throw GraphQLException("There was an error.")}
+        }
     }
 }
