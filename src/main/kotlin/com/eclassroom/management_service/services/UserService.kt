@@ -55,7 +55,7 @@ class UserService(
          return Result.NotFound("User with id: ${resetPasswordInputDto.userId} does not exist")
         val newPasswordHash: String? = resetPasswordInputDto.newPassword?.takeIf { it.isNotBlank() }
             ?.let { passwordEncoder.encode(it) }
-        if(resetPasswordInputDto.role == RoleEnum.ADMIN && newPasswordHash!=null){
+        if(user.role!=RoleEnum.ADMIN && resetPasswordInputDto.role == RoleEnum.ADMIN && newPasswordHash!=null){
             userRepository.saveAndFlush(user.apply { this.passwordHash=newPasswordHash })
         }
         else{
