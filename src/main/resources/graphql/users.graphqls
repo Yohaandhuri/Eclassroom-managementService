@@ -30,6 +30,7 @@ type User {
     role: RoleEnum!
     gender: GenderEnum!
     creatorId: ID
+    sem: Int
 }
 
 type Query {
@@ -60,5 +61,6 @@ input UserInput{
     role: RoleEnum!
     creatorId: ID!
     password: String
+    sem: Int
 }
 

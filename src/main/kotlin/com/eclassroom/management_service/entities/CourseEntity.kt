@@ -21,6 +21,12 @@ data class CourseEntity(
     @Column
     val credicts: String,
 
+    @Column
+    val year: String,
+
+    @Column
+    val sem:Int,
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "faculty_id") // foreign key in courses table
     var faculty: UsersEntity? = null,

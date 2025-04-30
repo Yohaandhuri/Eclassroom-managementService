@@ -4,13 +4,17 @@ type Course {
     duration: String
     credits: String
     facultyId: ID
+    year: String
+    sem: Int
 }
 
 input CourseInput {
     title: String!
     duration: String!
     credits: String!
-    facultyId: ID
+    facultyId: ID,
+    year:String!,
+    sem:Int!
 }
 
 extend type Query {

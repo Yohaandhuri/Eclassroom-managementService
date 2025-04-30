@@ -3,11 +3,10 @@ package com.eclassroom.management_service.entities
 import com.eclassroom.management_service.commonEnums.GenderEnum
 import com.eclassroom.management_service.commonEnums.RoleEnum
 import com.eclassroom.management_service.commonEnums.StatusEnum
-import com.eclassroom.management_service.dto.UserDto
 import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.*
+import org.hibernate.annotations.Check
 import java.time.LocalDate
-import java.util.UUID
 
 @Entity
 @Table(name = "users")
@@ -41,6 +40,10 @@ data class UsersEntity(
     @Column(name = "gender")
     @Enumerated(EnumType.STRING)
     val gender: GenderEnum? = null,
+
+    @Column(name = "sem")
+    @Check(constraints = "sem BETWEEN 1 AND 8")
+    val sem: Int? = null,
 
 //    @Column(name = "profile_picture")
 //    val profilePicture: String? = null,

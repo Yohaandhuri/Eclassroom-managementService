@@ -30,7 +30,8 @@ interface UserRepository : JpaRepository<UsersEntity,Long> {
         u.role,
         u.gender,
         u.createdBy,
-        u.roleNumber
+        u.roleNumber,
+        u.sem
     )
     FROM UsersEntity u
     WHERE u.role = :role

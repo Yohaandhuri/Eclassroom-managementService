@@ -19,7 +19,8 @@ data class UserDto (
     val role: RoleEnum,
     val gender: GenderEnum?,
     val password: String? = null,
-    val roleId: Int? = null
+    val roleId: Int? = null,
+    val sem: Int? = null
 )
 
 data class UserInputDto (
@@ -33,6 +34,7 @@ data class UserInputDto (
     val role: RoleEnum,
     val gender: GenderEnum?,
     val password: String? = null,
+    val sem: Int? = null
 )
 
 data class UserDtoTemp(
@@ -46,7 +48,8 @@ data class UserDtoTemp(
     val role: RoleEnum,
     val gender:GenderEnum,
     val createdBy: Long,
-    val roleNumber:Int? = null
+    val roleNumber:Int? = null,
+    val sem: Int? = null
 )
 
 
@@ -63,7 +66,8 @@ fun UserInputDto.toEntity(password:String?,roleId:Int): UsersEntity =
         passwordHash = password,
         role = this.role,
         gender = this.gender,
-        roleNumber = roleId
+        roleNumber = roleId,
+        sem = this.sem
     ).apply {
         this.createdBy = creatorId
 //        this.createdAt = LocalDateTime.now() // already in PrePersist
@@ -80,7 +84,8 @@ fun UsersEntity.toUserDto() : UserDto = UserDto(
     role = this.role,
     gender = this.gender,
     creatorId = this.createdBy,
-    roleId = this.roleNumber
+    roleId = this.roleNumber,
+    sem = this.sem
 )
 
 fun UserDtoTemp.toUserDto(): UserDto = UserDto (
@@ -94,5 +99,6 @@ fun UserDtoTemp.toUserDto(): UserDto = UserDto (
         role = this.role,
         gender = this.gender,
         creatorId = this.createdBy,
-        roleId = this.roleNumber
+        roleId = this.roleNumber,
+        sem = this.sem
 )
