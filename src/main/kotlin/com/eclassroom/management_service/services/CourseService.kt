@@ -7,6 +7,7 @@ import com.eclassroom.management_service.repositories.CourseRepository
 import com.eclassroom.management_service.repositories.UserRepository
 import jakarta.persistence.EntityNotFoundException
 import jakarta.transaction.Transactional
+import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.stereotype.Service
 import java.util.*
 import kotlin.jvm.optionals.getOrNull
@@ -44,6 +45,10 @@ class CourseService(
 
     fun getAllCourses(): List<CourseDto> {
         return courseRepository.findAll().map { it.toDto() }
+    }
+
+    fun getAllCoursesBySem(sem:Int): List<CourseDto> {
+        return courseRepository.findBySem(sem)?.map { it.toDto() } ?: listOf()
     }
 
     fun saveCourse(courseInputDto: CourseInputDto): Result {

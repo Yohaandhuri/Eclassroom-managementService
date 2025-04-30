@@ -19,6 +19,7 @@ input CourseInput {
 
 extend type Query {
     getAllCourses: [Course]!
+    getAllCoursesBySem(sem:Int!): [Course]
     getCourseById(id: ID!): Course
     getFacultyCourses(facultyId:ID!): [Course]
     getCourseStudents(courseId: ID): [User]

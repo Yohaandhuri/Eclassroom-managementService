@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional
 interface CourseRepository : JpaRepository<CourseEntity, Long> {
     fun findByTitle(title:String):CourseEntity?
     fun findByFacultyId(facultyId:Long): List<CourseEntity>?
+    fun findBySem(sem:Int): List<CourseEntity>?
     @Query("""
         SELECT new com.eclassroom.management_service.dto.UserDtoTemp(
             u.id, u.firstName, u.lastName, u.email, u.dob, u.phoneNumber,

@@ -22,6 +22,11 @@ class CourseResolver(
     }
 
     @QueryMapping
+    fun getAllCoursesBySem(@Argument sem:Int): List<CourseDto> {
+        return courseService.getAllCoursesBySem(sem)
+    }
+
+    @QueryMapping
     fun getCourseById(@Argument id: Long): CourseDto? {
         return when (val result = courseService.getCourseById(id)) {
             is CourseService.Result.Success -> result.entity
